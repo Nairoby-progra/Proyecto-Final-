@@ -1,0 +1,53 @@
+CREATE TABLE IF NOT EXISTS Propietarios (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nombre TEXT NOT NULL,
+    Telefono TEXT,
+    Email TEXT,
+    Direccion TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Veterinarios (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nombre TEXT NOT NULL,
+    Especialidad TEXT,
+    Telefono TEXT
+);
+
+CREATE TABLE IF NOT EXISTS Mascotas (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    PropietarioId INTEGER NOT NULL,
+    Nombre TEXT NOT NULL,
+    Especie TEXT,
+    Raza TEXT,
+    FechaNacimiento TEXT,
+    FOREIGN KEY (PropietarioId) REFERENCES Propietarios(Id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Citas (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    MascotaId INTEGER NOT NULL,
+    VeterinarioId INTEGER NOT NULL,
+    FechaHora TEXT NOT NULL,
+    Motivo TEXT,
+    Estado TEXT NOT NULL DEFAULT 'Programada',
+    FOREIGN KEY (MascotaId) REFERENCES Mascotas(Id) ON DELETE CASCADE,
+    FOREIGN KEY (VeterinarioId) REFERENCES Veterinarios(Id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Consultas (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    CitaId INTEGER NOT NULL,
+    Diagnostico TEXT,
+    Tratamiento TEXT,
+    Observaciones TEXT,
+    FOREIGN KEY (CitaId) REFERENCES Citas(Id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Facturas (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ConsultaId INTEGER NOT NULL,
+    Monto REAL NOT NULL,
+    FechaEmision TEXT NOT NULL,
+    Pagada INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (ConsultaId) REFERENCES Consultas(Id) ON DELETE CASCADE
+);
